@@ -1,4 +1,4 @@
-TARGET = Cache.x
+TARGET = cache.x
 CC = g++
 
 FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++14-compat \
