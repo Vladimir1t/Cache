@@ -50,36 +50,42 @@ private:
     uint32_t find_in_cache(T elem) {
         auto get_elem {hash_t.find(elem)};
         
-        if (get_elem->second.num_queue == 0) { // Am
-            cout << "Strike in Am\n";
+        if (get_elem->second.num_queue == 0) {     // Am
 
             auto it {Am.list_In.begin()};
-            for (; it != Am.list_In.end(); it++)
+            for (; it != Am.list_In.end(); ++it)
                 if (*it == elem) {
                     Am.list_In.push_front(*it);
                     Am.list_In.erase(it);
                     break;
-                };
-                return 1;
+                }
+            cout << "Hit in Am\n";
+
+            return 1;
         }
         else if (get_elem->second.num_queue == 1) {  // A1
-            auto it {A1.list_Out.begin()};
 
-            for (; it != A1.list_Out.end(); it++)
+            auto it {A1.list_Out.begin()};
+            for (; it != A1.list_Out.end(); ++it)
                 if (*it == elem) {
                     Am.list_In.push_front(*it);
-                    if (Am.size_In > Am.list_In.size()) {
+
+                    if (Am.size_In < Am.list_In.size()) { // if Am size is above the threshold
+                        T eresed_elem = Am.list_In.back();
+                        Am.list_In.pop_back();
+
+                        auto get_elem_erased {hash_t.find(eresed_elem)};
+                        get_elem->second.num_queue = 1;                      // Am -> A1
                         
-                        Elem_hash_t elem_hash_t = {elem, 1}; 
-                        hash_t.insert({elem, elem_hash_t});
+                        A1.list_Out.push_front(eresed_elem);
                     }
+                    
+                    get_elem->second.num_queue = 0;                          // A1 -> Am
                     A1.list_Out.erase(it);
                     break;
-                };
+                }
            
-            cout << "Strike in A1\n";
-            Elem_hash_t elem_hash_t = {elem, 1}; 
-            hash_t.insert({elem, elem_hash_t});
+            cout << "Hit in A1\n";
 
             return 1;
         }
@@ -89,20 +95,20 @@ private:
 
 public:
 
-    void create_cache() {
-        std::cout << "Input the size of cache\n";
-        uint64_t size = 0;
-        cin >> size;
+    void create_cache(uint64_t cache_size) {
 
-        Am.size_In  = size * 0.2 + 1;    // IN  ~ 20%
-        A1.size_Out = size - Am.size_In; // OUT ~ 80%
+        Am.size_In  = cache_size * 0.2 + 1;    // IN  ~ 20%
+        A1.size_Out = cache_size - Am.size_In; // OUT ~ 80%
 
-        hash_t.reserve(size);
+        hash_t.reserve(cache_size);
 
         cout << Am.size_In << ' ' << A1.size_Out << '\n';
     }
-
-    uint32_t insert_elem(T elem) {
+    /** @brief cache_elem - function that cache the element by algorith 2Q
+     *  @param elem element 
+     *  @return 0 or 1 
+     */
+    uint32_t cache_elem(T elem) {
         std::cout << "value = " << elem << '\n';
 
         if (hash_t.find(elem) == hash_t.end()) { 
@@ -130,14 +136,14 @@ public:
                 A1.list_Out.pop_back();
                 cout << "put in list A1 {" << A1.list_Out.back() << "}\n\n";
 
-                A1.list_Out.push_back(elem);
+                A1.list_Out.push_front(elem);
                 Elem_hash_t elem_hash_t = {elem, 1}; 
                 hash_t.insert({elem, elem_hash_t});
 
                 return 0;
             }
         }
-        else {                                        // locate in cache
+        else {                              // locate in cache
             return find_in_cache(elem);
         }
     }
