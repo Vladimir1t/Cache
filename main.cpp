@@ -4,10 +4,12 @@
 
 int main()
 {
+    std::cout << "\n-------------------- Cache --------------------\n\n";
+
     Cache_class<int> cache;
     cache.create_cache();
 
-    std::cout << "input elements\n";
+    std::cout << "Input elements\n";
 
     uint64_t new_elem = 0;
     uint64_t strike_counter = 0, num = 0;
@@ -17,5 +19,6 @@ int main()
     }
 
     std::cout << "number of strikes = " << strike_counter << '\n';
-    std::cout << strike_counter / num * 100<< '% \n';    
+    uint64_t result = (double) strike_counter / (double) num * 100;
+    std::cout << result << "% \n";    
 }
