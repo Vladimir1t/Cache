@@ -1,4 +1,4 @@
-TARGET = cache.x
+TARGET = ./cache.x
 CC = g++
 
 FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++14-compat \
@@ -15,14 +15,21 @@ FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop
 CSRC = src/cache/cpp main.cpp
 COBJ = $(CSRC : %.c = %.o)
 
-all : main.o cache.o
-	$(CC) main.o cache.o -I./include -o $(TARGET)
+test_data : test_big_data.o
+	$(CC) test_big_data.o -o test_data.x
+
+all : main.o tests.o
+	$(CC) main.o tests.o -I./include -o $(TARGET)
+	$(TARGET)
 
 main.o : main.cpp
 	$(CC) $(FLAGS) -I./include -c main.cpp
 
-cache.o : src/cache.cpp
-	$(CC) -I./include -c src/cache.cpp
+test_big_data.o : test_big_data.cpp
+	$(CC) $(FLAGS) -c test_big_data.cpp
+
+tests.o : src/tests.cpp
+	$(CC) $(FLAGS) -I./include -c src/tests.cpp
 
 .PHONY clear :
 	rm -rf *.o *.log *.x
