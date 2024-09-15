@@ -1,5 +1,5 @@
-# 2Q Cache System - README
-
+# 2Q Cache System 
+---
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Compilation Instructions](#compilation-instructions)
