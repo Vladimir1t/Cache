@@ -25,8 +25,8 @@ all : main.o tests.o
 main.o : main.cpp
 	$(CC) $(FLAGS) -I./include -c main.cpp
 
-test_big_data.o : test_big_data.cpp
-	$(CC) $(FLAGS) -c test_big_data.cpp
+test_big_data.o : src/test_big_data.cpp
+	$(CC) $(FLAGS) -c src/test_big_data.cpp
 
 tests.o : src/tests.cpp
 	$(CC) $(FLAGS) -I./include -c src/tests.cpp
