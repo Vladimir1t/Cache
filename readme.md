@@ -117,6 +117,12 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
 ## Notes
 - The program uses a 2Q caching strategy, where the Main Queue takes up 20% of the cache size, and the Out Queue holds 80%.
 - To enable debugging information, you can define the `Debug` macro in `cache.hpp`. This will print detailed cache operations to the console during execution.
+
+---
+![pseudocode](info/2Q.PDF.png)
+- pseudocode of basic 2Q algotithm
+---
+
   
 ### Compilation Debug Example:
 ```bash
