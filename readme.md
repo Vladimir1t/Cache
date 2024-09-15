@@ -11,7 +11,7 @@
 ## Introduction
 This project implements a **2Q Cache System**, which is a two-level cache structure used to manage frequently accessed elements more efficiently. The cache is divided into two queues:
 - **Main Queue** (Q1) – for frequently accessed elements.
-- **Out Queue** (Q2) – for recently evicted elements.
+- **Out Queue**  (Q2) – for recently evicted elements.
 
 The main goal of the cache is to track and improve the hit ratio for repeated accesses.
 
