@@ -7,27 +7,25 @@
 #include <unordered_map>
 #include <list>
 
-using namespace std;
+#define MAIN_Q 0
+#define OUT_Q  1
+
+// #define Debug
 
 /** @brief Cache - a class with its strucures and methods of 2Q cache
- * 
  */
-//namespace Pr {
-
 template <typename T>
 class Cache_class {
 
 private:
-    // uint64_t cache_size_In = 0;
-    // uint64_t cache_size_A1 = 0;
-
+   
     struct Elem_hash_t {
         T        value;
         uint32_t num_queue;
     };
 
     struct In_queue {
-        uint64_t     size_In;
+        uint64_t     size_M;
         std::list<T> list_In;
     };
 
@@ -36,60 +34,58 @@ private:
         std::list<T> list_Out;
     };
 
-    In_queue  Am = {0};
-    Out_queue A1 = {0};
+    In_queue  Main_q = {0};
+    Out_queue Out_q  = {0};
 
     uint64_t size_hash_t = 0;
 
     std::unordered_map<T, Elem_hash_t> hash_t;
 
-    void erase_elem() {
-
-    }
-
     uint32_t find_in_cache(T elem) {
         auto get_elem {hash_t.find(elem)};
         
-        if (get_elem->second.num_queue == 0) {     // Am
+        if (get_elem->second.num_queue == MAIN_Q) {     // Main_q
 
-            auto it {Am.list_In.begin()};
-            for (; it != Am.list_In.end(); ++it)
+            auto it {Main_q.list_In.begin()};
+            for (; it != Main_q.list_In.end(); ++it)
                 if (*it == elem) {
-                    Am.list_In.push_front(*it);
-                    Am.list_In.erase(it);
+                    Main_q.list_In.push_front(*it);
+                    Main_q.list_In.erase(it);
                     break;
                 }
-            cout << "Hit in Am\n";
+            #ifdef Debug
+                std::cout << "Hit in Main_q\n";
+            #endif
 
             return 1;
         }
-        else if (get_elem->second.num_queue == 1) {  // A1
+        else if (get_elem->second.num_queue == OUT_Q) {  // Out_q
 
-            auto it {A1.list_Out.begin()};
-            for (; it != A1.list_Out.end(); ++it)
+            auto it {Out_q.list_Out.begin()};
+            for (; it != Out_q.list_Out.end(); ++it)
                 if (*it == elem) {
-                    Am.list_In.push_front(*it);
+                    Main_q.list_In.push_front(*it);
 
-                    if (Am.size_In < Am.list_In.size()) { // if Am size is above the threshold
-                        T eresed_elem = Am.list_In.back();
-                        Am.list_In.pop_back();
+                    if (Main_q.size_M < Main_q.list_In.size()) { // if Main_q size is above the threshold
+                        T eresed_elem = Main_q.list_In.back();
+                        Main_q.list_In.pop_back();
 
                         auto get_elem_erased {hash_t.find(eresed_elem)};
-                        get_elem->second.num_queue = 1;                      // Am -> A1
+                        get_elem->second.num_queue = OUT_Q;                      // Main_q -> Out_q
                         
-                        A1.list_Out.push_front(eresed_elem);
+                        Out_q.list_Out.push_front(eresed_elem);
                     }
                     
-                    get_elem->second.num_queue = 0;                          // A1 -> Am
-                    A1.list_Out.erase(it);
+                    get_elem->second.num_queue = MAIN_Q;                          // Out_q -> Main_q
+                    Out_q.list_Out.erase(it);
                     break;
                 }
-           
-            cout << "Hit in A1\n";
+            #ifdef Debug
+                std::cout << "Hit in Out_q\n";
+            #endif
 
             return 1;
         }
-
         return 0;
     }
 
@@ -97,64 +93,90 @@ public:
 
     void create_cache(uint64_t cache_size) {
 
-        Am.size_In  = cache_size * 0.2 + 1;    // IN  ~ 20%
-        A1.size_Out = cache_size - Am.size_In; // OUT ~ 80%
+        Main_q.size_M  = cache_size * 0.2 + 1;       // MAIN ~ 20%
+        Out_q.size_Out = cache_size - Main_q.size_M; // OUT  ~ 80%
 
         hash_t.reserve(cache_size);
-
-        cout << Am.size_In << ' ' << A1.size_Out << '\n';
+        #ifdef Debug
+            std::cout << Main_q.size_M << ' ' << Out_q.size_Out << '\n';
+        #endif
     }
-    /** @brief cache_elem - function that cache the element by algorith 2Q
-     *  @param elem element 
+    /** @brief cache_elem() - function that cache the element by algorithm 2Q
+     *  @param elem element that is cached
      *  @return 0 or 1 
      */
     uint32_t cache_elem(T elem) {
-        std::cout << "value = " << elem << '\n';
+        #ifdef Debug
+            std::cout << "value = " << elem << '\n';
+        #endif
 
-        if (hash_t.find(elem) == hash_t.end()) { 
+        if (hash_t.find(elem) == hash_t.end()) { // doesn't locate in cache
 
-            if (Am.size_In > Am.list_In.size()) { 
-                Am.list_In.push_front(elem);
-                cout << "put in list Am {" << Am.list_In.front() << "}\n\n";
+            if (Main_q.size_M > Main_q.list_In.size()) { 
+                Main_q.list_In.push_back(elem);
 
-                Elem_hash_t elem_hash_t = {elem, 0}; 
-                hash_t.insert({elem, elem_hash_t});
+                #ifdef Debug
+                    std::cout << "put in list Main_q {" << Main_q.list_In.back() << "}\n\n";
+                #endif
 
-                return 0;
-            }
-            else if (A1.size_Out > A1.list_Out.size()) {
-                A1.list_Out.push_front(elem);
-                cout << "put in list A1 {" << A1.list_Out.front() << "}\n\n";
-
-                Elem_hash_t elem_hash_t = {elem, 1}; 
-                hash_t.insert({elem, elem_hash_t});
+                hash_t.insert({elem, {elem, MAIN_Q}});
 
                 return 0;
             }
-            else { 
-                hash_t.erase(A1.list_Out.back());
-                A1.list_Out.pop_back();
-                cout << "put in list A1 {" << A1.list_Out.back() << "}\n\n";
+            else if (Out_q.size_Out > Out_q.list_Out.size()) {
+                Out_q.list_Out.push_back(elem);
 
-                A1.list_Out.push_front(elem);
-                Elem_hash_t elem_hash_t = {elem, 1}; 
-                hash_t.insert({elem, elem_hash_t});
+                #ifdef Debug
+                    std::cout << "put in list Out_q {" << Out_q.list_Out.back() << "}\n\n";
+                #endif 
+
+                hash_t.insert({elem, {elem, OUT_Q}});
+
+                return 0;
+            }
+            else if (Out_q.size_Out == Out_q.list_Out.size() && Out_q.size_Out != 0){ 
+                hash_t.erase(Out_q.list_Out.back());
+                Out_q.list_Out.pop_back();
+
+                Out_q.list_Out.push_front(elem);
+
+                #ifdef Debug
+                    std::cout << "put in list Out_q {" << Out_q.list_Out.front() << "}\n\n";
+                #endif
+
+                hash_t.insert({elem, {elem, OUT_Q}});
+
+                return 0;
+            }
+            else {
+                hash_t.erase(Main_q.list_In.back());
+                Main_q.list_In.pop_back();
+
+                Main_q.list_In.push_front(elem);
+
+                #ifdef Debug
+                    std::cout << "put in list Main_q {" << Main_q.list_In.front() << "}\n\n";
+                #endif 
+
+                hash_t.insert({elem, {elem, MAIN_Q}});
 
                 return 0;
             }
         }
-        else {                              // locate in cache
+        else {   // locate in cache
             return find_in_cache(elem);
         }
     }
+    void clear() { 
 
+        Main_q.list_In.clear();
+        Main_q.size_M = 0;
 
-    template <typename U>
-    void put_in_cache(T elem, U key) {
-        Am.list_In.push_front(elem);
+        Out_q.list_Out.clear();
+        Out_q.size_Out = 0;
 
+        hash_t.clear();
     }
 };
-
 
 #endif // CACHE_H

@@ -21,10 +21,11 @@ int main()
         num++;
         hits_counter += cache.cache_elem(new_elem);
     }
+    cache.clear();
 
     std::cout << "number of strikes = " << hits_counter << '\n';
     uint64_t result = (double) hits_counter / (double) num * 100;
     std::cout << result << "% \n";   
 
-    do_tests(); 
+    run_tests(); 
 }

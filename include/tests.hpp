@@ -1,6 +1,8 @@
 #ifndef TESTS_HPP
 #define TESTS_HPP
 
-void do_tests();
+/** @brief program that run tests
+ */
+void run_tests();
 
 #endif // TESTS_HPP

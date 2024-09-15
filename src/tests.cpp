@@ -6,16 +6,26 @@
 #include "cache.hpp"
 
 struct Test {
-    uint64_t    cache_size;
-    vector<int> elements;
-    uint64_t    hits_num;
+    uint64_t         cache_size;
+    std::vector<int> elements;
+    uint64_t         hits_num;
 };
 
-void do_tests () {
+void run_tests() {
+    uint64_t correct_test_count = 0;
 
     Cache_class<int> cache;
 
-    Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9}, 0}};
+    Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9}, 0},
+                    {10, {1, 1, 1, 2, 2, 2, 2, 3}, 5},
+                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 8}, 3},
+                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 4, 8, 3, 10}, 4},
+                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 4, 8, 3, 9}, 3},
+                    {5, {1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1}, 9},
+                    {5, {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2}, 2},
+                    {5, {1, 2, 3, 4, 5, 6, 7, 5, 34, 8, 10, 2}, 1},
+                    {1, {1, 1, 1, 1, 1}, 4},
+                    {1, {1, 2, 3, 3, 2}, 1}};
 
     const int TESTS_NUM = sizeof(tests) / sizeof(tests[0]);
 
@@ -23,16 +33,19 @@ void do_tests () {
         cache.create_cache(tests[i].cache_size);
         uint64_t hits_counter = 0;
 
-        for (auto elem: tests[i].elements) {
+        for (int elem: tests[i].elements) {
             hits_counter += cache.cache_elem(elem);
         }
         if (hits_counter != tests[i].hits_num) {
-            std::cout << "test [" << i + 1<< "] wrong\n";
-            std::cout << "test hits value = " << tests[i].hits_num 
+            std::cout << "test [" << i + 1 << "] wrong\n";
+            std::cout << "expected hits value = " << tests[i].hits_num 
                       << "\ncurrent value = " << hits_counter << '\n';
         }
         else 
-            std::cout << "test [" << i + 1 << "] Ok\n";
+            correct_test_count++;
 
+        cache.clear();
     }
+    if (correct_test_count == TESTS_NUM)
+        std::cout << "--- All tests are correct ---\n";
 }
