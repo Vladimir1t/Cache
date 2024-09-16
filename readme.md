@@ -25,7 +25,7 @@ To compile the project, you can use the provided **Makefile**. The compiler used
    ```bash
    make all
    ```
-   This will generate an executable named `cache.x`.
+   This will generate an executable named `./cache.x`.
 
 4. To clean the compiled files, use:
    ```bash
@@ -103,7 +103,7 @@ number of strikes = 2
 The `tests.cpp` file provides several test cases to validate the functionality of the cache system. To run the tests:
 1. After compiling the code, execute the binary:
    ```bash
-   ./cache.x
+   make test
    ```
 2. After running, the test results will be displayed in the terminal.
 
@@ -117,7 +117,7 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
                 ...
 };
 ```
-### Test_big_data
+## Test_big_data
 - The function generate 10'000'000 numbers for testing cache 
 - you can put these numbers into file_test.txt
 ```bash
@@ -140,5 +140,5 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
   
 ### Compilation Debug Example:
 ```bash
-g++ -D Debug -std=c++17 -o cache.x main.cpp src/cache.cpp src/tests.cpp -I./include
+g++ -D Debug -std=c++17 -o cache.x main.cpp -I./include
 ```

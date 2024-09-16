@@ -3,42 +3,44 @@
 #include "tests.hpp"
 #include "cache.hpp"
 
-#define Test
-
 int main()
 {
-    std::cout << "\n-------------------- Cache --------------------\n\n";
-
     Cache_class<int> cache;
 
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;
-
-    std::cout << "Input the size of cache\n";
+    
+    #ifdef Debug
+        std::cout << "Input the size of cache\n";
+    #endif
     std::cin >> cache_size;
-    //std::cout << cache_size << '\n';
+    #ifdef Debug
+        std::cout << cache_size << '\n';
+    #endif
     cache.create_cache(cache_size);
-
-    std::cout << "Input the number of elements\n";
+    #ifdef Debug
+        std::cout << "Input the number of elements\n";
+    #endif
     std::cin >> number_of_elements;
-
-    std::cout << "Input elements\n";
+    #ifdef Debug
+        std::cout << "Input elements\n";
+    #endif
 
     uint64_t new_elem = 0;
     uint64_t hits_counter = 0, num = 0;
     for (uint64_t i = 0; i < number_of_elements; ++i) {
         std::cin >> new_elem;
         num++;
-        //std::cout << new_elem << '\n';
+        #ifdef Debug
+            std::cout << new_elem << '\n';
+        #endif
         hits_counter += cache.cache_elem(new_elem);
     }
     cache.clear();
 
-    std::cout << "number of strikes = " << hits_counter << '\n';
-    uint64_t result = (double) hits_counter / (double) num * 100;
-    std::cout << result << "% \n";   
-
-    #ifdef Test
-        run_tests(); 
+    std::cout << hits_counter << '\n';
+    #ifdef Debug
+        uint64_t result = (double) hits_counter / (double) num * 100;
+        std::cout << result << "% \n";  
     #endif
 }

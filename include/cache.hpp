@@ -10,8 +10,6 @@
 #define MAIN_Q 0
 #define OUT_Q  1
 
-// #define Debug
-
 /** @brief Cache - a class with its strucures and methods of 2Q cache
  */
 template <typename T>

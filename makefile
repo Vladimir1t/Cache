@@ -1,7 +1,7 @@
 TARGET = ./cache.x
 CC = g++
 
-FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++14-compat \
+DEBUG_FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations -Wc++14-compat \
 		-Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts -Wconditionally-supported -Wconversion \
 		-Wctor-dtor-privacy -Wempty-body -Wfloat-equal -Wformat-nonliteral -Wformat-security -Wformat-signedness \
 		-Wformat=2 -Winline -Wlogical-op -Wnon-virtual-dtor -Wopenmp-simd -Woverloaded-virtual -Wpacked -Wpointer-arith \
@@ -15,21 +15,25 @@ FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop
 CSRC = src/cache/cpp main.cpp
 COBJ = $(CSRC : %.c = %.o)
 
-test_data : test_big_data.o
-	$(CC) test_big_data.o -o test_data.x
-
 all : main.o tests.o
-	$(CC) main.o tests.o -I./include -o $(TARGET)
+	$(CC) main.o -I./include -o $(TARGET)
 	$(TARGET)
 
-main.o : main.cpp
-	$(CC) $(FLAGS) -I./include -c main.cpp
+test : tests.o
+	$(CC) tests.o -I./include -o test.x
+	./test.x
 
-test_big_data.o : src/test_big_data.cpp
-	$(CC) $(FLAGS) -c src/test_big_data.cpp
+test_big_data : test_big_data.o
+	$(CC) test_big_data.o -o test_big_data.x
 
 tests.o : src/tests.cpp
-	$(CC) $(FLAGS) -I./include -c src/tests.cpp
+	$(CC) -O2 -I./include -c src/tests.cpp
 
-.PHONY clear :
+main.o : main.cpp
+	$(CC) -O2 -I./include -c main.cpp
+
+test_big_data.o : src/test_big_data.cpp
+	$(CC) -O2 -c src/test_big_data.cpp
+
+.PHONY clean :
 	rm -rf *.o *.log *.x

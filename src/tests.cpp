@@ -11,10 +11,10 @@ struct Test {
     uint64_t         hits_num;
 };
 
-void run_tests() {
-    uint64_t correct_test_count = 0;
-
+int main() {
     Cache_class<int> cache;
+
+    uint64_t correct_test_count = 0;
 
     Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9}, 0},
                     {10, {1, 1, 1, 2, 2, 2, 2, 3}, 5},
