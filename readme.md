@@ -79,6 +79,8 @@ cache.clear();               // Clears the cache
 ```bash
 Input the size of cache
 5
+Input number of elemets
+7
 Input elements
 1 2 3 4 5 6 7
 number of strikes = 0
@@ -89,6 +91,8 @@ number of strikes = 0
 ```bash
 Input the size of cache
 5
+Input number of elemets
+6
 Input elements
 1 1 2 3 2 4
 number of strikes = 2
