@@ -113,6 +113,16 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
                 ...
 };
 ```
+### Test_big_data
+- The function generate 10'000'000 numbers for testing cache 
+- you can put these numbers into file_test.txt
+```bash
+   ./test_data.x > file_test.txt
+```
+- put numbers into cache.x
+```bash
+   ./cache.x < file_test.txt
+```
 
 ## Notes
 - The program uses a 2Q caching strategy, where the Main Queue takes up 20% of the cache size, and the Out Queue holds 80%.

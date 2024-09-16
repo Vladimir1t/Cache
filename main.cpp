@@ -3,7 +3,7 @@
 #include "tests.hpp"
 #include "cache.hpp"
 
-//#define
+#define Test
 
 int main()
 {
@@ -38,5 +38,7 @@ int main()
     uint64_t result = (double) hits_counter / (double) num * 100;
     std::cout << result << "% \n";   
 
-    run_tests(); 
+    #ifdef Test
+        run_tests(); 
+    #endif
 }
