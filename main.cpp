@@ -41,6 +41,6 @@ int main()
     std::cout << hits_counter << '\n';
     #ifdef Debug
         uint64_t result = (double) hits_counter / (double) num * 100;
-        std::cout << result << "% \n";  
+        std::cout << result << "%\n";  
     #endif
 }

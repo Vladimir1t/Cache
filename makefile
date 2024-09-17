@@ -35,5 +35,5 @@ main.o : main.cpp
 test_big_data.o : src/test_big_data.cpp
 	$(CC) -O2 -c src/test_big_data.cpp
 
-.PHONY clean :
+.PHONY clear :
 	rm -rf *.o *.log *.x

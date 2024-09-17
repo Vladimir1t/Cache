@@ -27,9 +27,14 @@ To compile the project, you can use the provided **Makefile**. The compiler used
    ```
    This will generate an executable named `./cache.x`.
 
-4. To clean the compiled files, use:
+4. To run tests or use ideal algorithm, use:
    ```bash
-   make clean
+   make test
+   ```
+
+5. To clean the compiled files, use:
+   ```bash
+   make clear
    ```
 
 ## Class and Method Descriptions
@@ -99,6 +104,11 @@ number of strikes = 2
 33%
 ```
 
+## Class Ideal_cache
+   The ideal algorithm based of 'prediction of a future'. Has better reults of hits than 2Q algorithm.
+   You can run ideal cache in tests.cpp by using flag *-Ideal_cache*.
+
+
 ## Running Tests
 The `tests.cpp` file provides several test cases to validate the functionality of the cache system. To run the tests:
 1. After compiling the code, execute the binary:
@@ -141,4 +151,6 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
 ### Compilation Debug Example:
 ```bash
 g++ -D Debug -std=c++17 -o cache.x main.cpp -I./include
+
+g++ -D Debug -std=c++17 -o test.x src/tests.cpp -I./include
 ```
