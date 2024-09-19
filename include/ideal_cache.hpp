@@ -12,7 +12,7 @@
 /** @brief Ideal Cache - a class with its list, unordered_map and methods of ideal cache algorithm
  */
 template <typename T>
-class Ideal_cache_class {
+class Ideal_cache {
 
 private:
 
@@ -28,7 +28,7 @@ private:
     uint32_t find_in_cache(vector_iter_t iter_elem) {
 
         #ifdef Debug
-            std::cout << "Hit in cache\n";
+            std::cout << "Hit in cache" << std::endl;
         #endif
 
         return 1;
@@ -42,7 +42,7 @@ public:
         hash_t.reserve(cache_size);
 
         #ifdef Debug
-            std::cout << "ideal cache size " << cache_size << '\n';
+            std::cout << "ideal cache size " << cache_size << std::endl;
         #endif
     }
 
@@ -71,7 +71,7 @@ public:
     uint32_t cache_elem(vector_iter_t iter_elem, std::vector<T>& requests) {
 
         #ifdef Debug
-            std::cout << "value = " << *iter_elem << '\n';
+            std::cout << "value = " << *iter_elem << std::endl;
         #endif
 
         if (hash_t.find(*iter_elem) == hash_t.end()) {

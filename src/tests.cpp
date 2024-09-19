@@ -6,7 +6,7 @@
 #include "cache.hpp"
 #include "ideal_cache.hpp"
 
-#define Ideal_cache
+// #define Ideal_cache
 
 struct Test {
     uint64_t         cache_size;
@@ -15,7 +15,7 @@ struct Test {
 };
 
 int main() {
-    Cache_class<int> cache;
+    Cache_2Q<int> cache;
 
     uint64_t correct_test_count = 0;
 
@@ -51,31 +51,4 @@ int main() {
     }
     if (correct_test_count == TESTS_NUM)
         std::cout << "--- All tests are correct ---\n";
-
-    #ifdef Ideal_cache                      // compare 2Q with ideal (perfect) cache algorithm
-        Ideal_cache_class<int> ideal_cache;
-
-        for (int i = 0; i < TESTS_NUM; ++i) {
-
-            uint64_t cache_size   = 0;
-            uint64_t hits_counter = 0;
-
-            #ifdef Debug
-                std::cout << "Input the size of ideal cache\n";
-            #endif
-                std::cin >> cache_size;
-            #ifdef Debug
-                std::cout << cache_size << '\n';
-            #endif
-            ideal_cache.create_cache(cache_size);
-
-            // for (auto elem_it {tests[i].elements.begin()}; elem_it != tests[i].elements.end(); ++elem_it) {
-
-            //     hits_counter += ideal_cache.cache_elem(elem_it, tests[i].elements);
-            // }
-            hits_counter = ideal_cache.run_ideal_cache(tests[i].elements);
-            std::cout << "hits "<< hits_counter << '\n';
-            ideal_cache.clear();
-        }
-    #endif
 }

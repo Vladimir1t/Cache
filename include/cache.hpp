@@ -13,12 +13,14 @@
 /** @brief Cache - a class with its strucures and methods of 2Q cache
  */
 template <typename T>
-class Cache_class {
+class Cache_2Q {
 
 private:
+
+    using list_it = typename std::list<T>::iterator;
    
     struct Elem_hash_t {
-        T        value;
+        list_it  value;   
         uint32_t num_queue;
     };
 
@@ -40,46 +42,44 @@ private:
     std::unordered_map<T, Elem_hash_t> hash_t;
 
     uint32_t find_in_cache(T elem) {
-        auto get_elem {hash_t.find(elem)};
+        Elem_hash_t get_elem = hash_t.at(elem);
         
-        if (get_elem->second.num_queue == MAIN_Q) {     // Main_q
+        if (get_elem.num_queue == MAIN_Q) {     
+                       
+            T new_elem = *(get_elem.value);     
+            Main_q.list_In.push_front(new_elem);
 
-            auto it {Main_q.list_In.begin()};
-            for (; it != Main_q.list_In.end(); ++it)
-                if (*it == elem) {
-                    Main_q.list_In.push_front(*it);
-                    Main_q.list_In.erase(it);
-                    break;
-                }
+            Main_q.list_In.erase(get_elem.value);
+            hash_t.erase(*(get_elem.value));
+
+            hash_t.insert({new_elem, {Main_q.list_In.begin(), MAIN_Q}});
+
             #ifdef Debug
-                std::cout << "Hit in Main_q\n";
+                std::cout << "Hit in Main_q" << std::endl;
             #endif
 
             return 1;
         }
-        else if (get_elem->second.num_queue == OUT_Q) {  // Out_q
+        else if (get_elem.num_queue == OUT_Q) { 
 
-            auto it {Out_q.list_Out.begin()};
-            for (; it != Out_q.list_Out.end(); ++it)
-                if (*it == elem) {
-                    Main_q.list_In.push_front(*it);
+            Main_q.list_In.push_front(*(get_elem.value));
 
-                    if (Main_q.size_M < Main_q.list_In.size()) { // if Main_q size is above the threshold
-                        T eresed_elem = Main_q.list_In.back();
-                        Main_q.list_In.pop_back();
+            if (Main_q.size_M < Main_q.list_In.size()) { // if Main_q size is above the threshold
+                T eresed_elem = Main_q.list_In.back();
+                Main_q.list_In.pop_back();
 
-                        auto get_elem_erased {hash_t.find(eresed_elem)};
-                        get_elem->second.num_queue = OUT_Q;                      // Main_q -> Out_q
-                        
-                        Out_q.list_Out.push_front(eresed_elem);
-                    }
-                    
-                    get_elem->second.num_queue = MAIN_Q;                          // Out_q -> Main_q
-                    Out_q.list_Out.erase(it);
-                    break;
-                }
+                auto get_elem_erased {hash_t.find(eresed_elem)};
+                get_elem.num_queue = OUT_Q;                      // Main_q -> Out_q
+                
+                Out_q.list_Out.push_front(eresed_elem);
+            }
+            
+            Out_q.list_Out.erase(get_elem.value);
+            get_elem.num_queue = MAIN_Q;                          // Out_q -> Main_q
+            get_elem.value = Main_q.list_In.begin();
+                
             #ifdef Debug
-                std::cout << "Hit in Out_q\n";
+                std::cout << "Hit in Out_q" << std::endl;
             #endif
 
             return 1;
@@ -96,7 +96,7 @@ public:
 
         hash_t.reserve(cache_size);
         #ifdef Debug
-            std::cout << Main_q.size_M << ' ' << Out_q.size_Out << '\n';
+            std::cout << Main_q.size_M << ' ' << Out_q.size_Out << std::endl;
         #endif
     }
     /** @brief cache_elem() - function that cache the element by algorithm 2Q
@@ -105,10 +105,10 @@ public:
      */
     uint32_t cache_elem(T elem) {
         #ifdef Debug
-            std::cout << "value = " << elem << '\n';
+            std::cout << "value = " << elem << std::endl;
         #endif
 
-        if (hash_t.find(elem) == hash_t.end()) { // doesn't locate in cache
+        if (hash_t.find(elem) == hash_t.end()) {     // doesn't locate in cache
 
             if (Main_q.size_M > Main_q.list_In.size()) { 
                 Main_q.list_In.push_back(elem);
@@ -117,7 +117,9 @@ public:
                     std::cout << "put in list Main_q {" << Main_q.list_In.back() << "}\n\n";
                 #endif
 
-                hash_t.insert({elem, {elem, MAIN_Q}});
+                Elem_hash_t elem_hash_t = {--Main_q.list_In.end(), MAIN_Q};
+               
+                hash_t.insert({elem, elem_hash_t});
 
                 return 0;
             }
@@ -128,7 +130,7 @@ public:
                     std::cout << "put in list Out_q {" << Out_q.list_Out.back() << "}\n\n";
                 #endif 
 
-                hash_t.insert({elem, {elem, OUT_Q}});
+                hash_t.insert({elem, {--Out_q.list_Out.end(), OUT_Q}});  // добавляем итератор
 
                 return 0;
             }
@@ -142,7 +144,7 @@ public:
                     std::cout << "put in list Out_q {" << Out_q.list_Out.front() << "}\n\n";
                 #endif
 
-                hash_t.insert({elem, {elem, OUT_Q}});
+                hash_t.insert({elem, {Out_q.list_Out.begin(), OUT_Q}});   
 
                 return 0;
             }
@@ -156,7 +158,7 @@ public:
                     std::cout << "put in list Main_q {" << Main_q.list_In.front() << "}\n\n";
                 #endif 
 
-                hash_t.insert({elem, {elem, MAIN_Q}});
+                hash_t.insert({elem, {Main_q.list_In.begin(), MAIN_Q}});    
 
                 return 0;
             }

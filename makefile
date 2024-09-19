@@ -23,8 +23,15 @@ test : tests.o
 	$(CC) tests.o -I./include -o test.x
 	./test.x
 
+ideal_cache : ideal_cache.o
+	$(CC) ideal_cache.o -I./include -o ideal_cache.x
+	./ideal_cache.x
+
 test_big_data : test_big_data.o
 	$(CC) test_big_data.o -o test_big_data.x
+
+ideal_cache.o : src/ideal_cache.cpp
+	$(CC) -O2 -I./include -c src/ideal_cache.cpp
 
 tests.o : src/tests.cpp
 	$(CC) -O2 -I./include -c src/tests.cpp

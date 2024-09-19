@@ -5,7 +5,7 @@
 
 int main()
 {
-    Cache_class<int> cache;
+    Cache_2Q<int> cache;
 
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;
@@ -15,7 +15,7 @@ int main()
     #endif
     std::cin >> cache_size;
     #ifdef Debug
-        std::cout << cache_size << '\n';
+        std::cout << cache_size << std::endl;
     #endif
     cache.create_cache(cache_size);
     #ifdef Debug
@@ -23,7 +23,7 @@ int main()
     #endif
     std::cin >> number_of_elements;
     #ifdef Debug
-        std::cout << "Input elements\n";
+        std::cout << "Input elements" << std::endl;
     #endif
 
     uint64_t new_elem = 0;
@@ -32,7 +32,7 @@ int main()
         std::cin >> new_elem;
         num++;
         #ifdef Debug
-            std::cout << new_elem << '\n';
+            std::cout << new_elem << std::endl;
         #endif
         hits_counter += cache.cache_elem(new_elem);
     }

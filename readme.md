@@ -27,19 +27,23 @@ To compile the project, you can use the provided **Makefile**. The compiler used
    ```
    This will generate an executable named `./cache.x`.
 
-4. To run tests or use ideal algorithm, use:
+4. To run tests, use:
    ```bash
    make test
    ```
+5. To run ideal cache, use:
+   ```bash
+   make ideal_cache
+   ```
 
-5. To clean the compiled files, use:
+6. To clean the compiled files, use:
    ```bash
    make clear
    ```
 
 ## Class and Method Descriptions
 
-### Class: `Cache_class<T>`
+### Class: `Cache_2Q<T>`
 This is a templated class that implements the 2Q caching algorithm.
 
 #### Private Members:
@@ -70,7 +74,7 @@ This is a templated class that implements the 2Q caching algorithm.
    
 ### Example of Main Flow:
 ```cpp
-Cache_class<int> cache;
+Cache_2Q<int> cache;
 cache.create_cache(10);      // Creates a cache of size 10
 cache.cache_elem(1);         // Adds element 1 to the cache
 cache.cache_elem(2);         // Adds element 2 to the cache
@@ -106,7 +110,9 @@ number of strikes = 2
 
 ## Class Ideal_cache
    The ideal algorithm based of 'prediction of a future'. Has better reults of hits than 2Q algorithm.
-   You can run ideal cache in tests.cpp by using flag *-Ideal_cache*.
+   You can run ideal cache in ideal_cache.cpp.
+### Class: `Ideal_cache<T>`
+This is a templated class that implements the ideal caching algorithm.
 
 
 ## Running Tests
@@ -153,4 +159,6 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
 g++ -D Debug -std=c++17 -o cache.x main.cpp -I./include
 
 g++ -D Debug -std=c++17 -o test.x src/tests.cpp -I./include
+
+g++ -D Debug -std=c++17 -o ideal_cache.x src/ideal_cache.cpp -I./include
 ```
