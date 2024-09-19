@@ -110,13 +110,9 @@ number of strikes = 2
 
 ## Class Ideal_cache
    The ideal algorithm based of 'prediction of a future'. Has better reults of hits than 2Q algorithm.
-<<<<<<< HEAD
    You can run ideal cache in ideal_cache.cpp.
 ### Class: `Ideal_cache<T>`
 This is a templated class that implements the ideal caching algorithm.
-=======
-   You can run ideal cache in tests.cpp  while complilation using flag *-D Ideal_cache*.
->>>>>>> 00b52335d3d9a5af4942579458af16a5c13f2f5e
 
 
 ## Running Tests
@@ -162,11 +158,8 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
 ```bash
 g++ -D Debug -std=c++17 -o cache.x main.cpp -I./include
 
-<<<<<<< HEAD
 g++ -D Debug -std=c++17 -o test.x src/tests.cpp -I./include
 
 g++ -D Debug -std=c++17 -o ideal_cache.x src/ideal_cache.cpp -I./include
-=======
-g++ -D Debug -D Ideal_cache -std=c++17 -o test.x src/tests.cpp -I./include
->>>>>>> 00b52335d3d9a5af4942579458af16a5c13f2f5e
+
 ```
