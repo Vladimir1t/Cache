@@ -50,7 +50,7 @@ public:
      *  @param requests vector of elements which will be cached
      *  @return number of hits
      */
-    uint64_t run_ideal_cache(std::vector<T> requests) {
+    uint64_t run_ideal_cache(std::vector<T>& requests) {
         
         uint64_t hits_counter = 0;
 
