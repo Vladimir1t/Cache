@@ -17,15 +17,12 @@ COBJ = $(CSRC : %.c = %.o)
 
 all : main.o tests.o
 	$(CC) main.o -I./include -o $(TARGET)
-	$(TARGET)
 
 test : tests.o
 	$(CC) tests.o -I./include -o test.x
-	./test.x
 
 ideal_cache : ideal_cache.o
 	$(CC) ideal_cache.o -I./include -o ideal_cache.x
-	./ideal_cache.x
 
 test_big_data : test_big_data.o
 	$(CC) test_big_data.o -o test_big_data.x

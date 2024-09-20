@@ -87,8 +87,15 @@ public:
 
                 bool find_in_requests = false;
 
-                vector_iter_t last_index = requests.begin();
-                list_iter_t iter_last_index = list_cache.begin();
+                for (vector_iter_t iter_v = iter_elem + 1; iter_v != requests.end(); ++iter_v) {
+                    if (*iter_v == *iter_elem)
+                        find_in_requests = true;
+                }
+                if (find_in_requests == false)
+                    return 0;
+
+                vector_iter_t last_index      = requests.begin();
+                list_iter_t   iter_last_index = list_cache.begin();
 
                 for (list_iter_t iter_cache = list_cache.begin(); iter_cache != list_cache.end(); ++iter_cache) {
                     find_in_requests = false;
