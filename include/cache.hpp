@@ -7,8 +7,10 @@
 #include <unordered_map>
 #include <list>
 
-#define MAIN_Q 0
-#define OUT_Q  1
+enum Queue {
+    MAIN_Q,
+    OUT_Q
+};
 
 /** @brief Cache - a class with its strucures and methods of 2Q cache
  */
@@ -20,8 +22,8 @@ private:
     using list_it = typename std::list<T>::iterator;
    
     struct Elem_hash_t {
-        list_it  value;   
-        uint32_t num_queue;
+        list_it value;   
+        bool    num_queue;
     };
 
     struct In_queue {

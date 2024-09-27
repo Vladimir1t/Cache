@@ -18,12 +18,13 @@ private:
 
     using list_iter_t   = typename std::list<T>::iterator;
     using vector_iter_t = typename std::vector<T>::iterator;
+    using hash_t_iter_t = typename std::unordered_map<T, T>;
 
-    std::list<T> list_cache;
+    //std::list<T> list_cache;
 
     uint64_t cache_size = 0;
 
-    std::unordered_map<T, list_iter_t> hash_t;
+    std::unordered_map<T, T> hash_t; //
 
     uint32_t find_in_cache(vector_iter_t iter_elem) {
 
@@ -54,7 +55,7 @@ public:
         
         uint64_t hits_counter = 0;
 
-        auto iter = requests.begin();
+        vector_iter_t iter = requests.begin();
         while (iter != requests.end()) {
             hits_counter += cache_elem(iter, requests);
             iter++;
@@ -68,7 +69,7 @@ public:
      *  @param requests vector of elements that will be cached
      *  @return 0 or 1 
      */
-    uint32_t cache_elem(vector_iter_t iter_elem, std::vector<T>& requests) {
+    bool cache_elem(vector_iter_t iter_elem, std::vector<T>& requests) {
 
         #ifdef Debug
             std::cout << "value = " << *iter_elem << std::endl;
@@ -76,14 +77,13 @@ public:
 
         if (hash_t.find(*iter_elem) == hash_t.end()) {
 
-            if (list_cache.size() < cache_size) {
+            if (hash_t.size() < cache_size) {
 
-                list_cache.push_front(*iter_elem);
-                hash_t.insert({*iter_elem, list_cache.begin()});
+                hash_t.insert({*iter_elem, *iter_elem});
                 
                 return 0;
             }
-            else if (list_cache.size() == cache_size && cache_size != 0) {
+            else if (hash_t.size() == cache_size && cache_size != 0) {
 
                 bool find_in_requests = false;
 
@@ -94,37 +94,34 @@ public:
                 if (find_in_requests == false)
                     return 0;
 
-                vector_iter_t last_index      = requests.begin();
-                list_iter_t   iter_last_index = list_cache.begin();
+                vector_iter_t last_index = requests.begin();
 
-                for (list_iter_t iter_cache = list_cache.begin(); iter_cache != list_cache.end(); ++iter_cache) {
+                T iter_last_index;
+
+                for (auto iter_cache: hash_t) {
                     find_in_requests = false;
 
                     for (vector_iter_t it = iter_elem; it != requests.end(); ++it) { 
-                        if (*it == *iter_cache) {
+                        if (*it == iter_cache.second) {
                             if (last_index < it) {
                                 last_index = it;
-                                iter_last_index = iter_cache;
+                                iter_last_index = iter_cache.first;
                             }
                             find_in_requests = true;
                             break;
                         }
                     }
                     if (find_in_requests == false) {
-                        hash_t.erase(*iter_cache);
-                        list_cache.erase(iter_cache);
+                        hash_t.erase(iter_cache.first);
 
-                        list_cache.push_front(*iter_elem);
-                        hash_t.insert({*iter_elem, list_cache.begin()});
+                        hash_t.insert({*iter_elem, *iter_elem});
                         
                         return 0;
                     }
                 }
-                hash_t.erase(*iter_last_index);
-                list_cache.erase(iter_last_index);
+                hash_t.erase(iter_last_index);
 
-                list_cache.push_front(*iter_elem);
-                hash_t.insert({*iter_elem, list_cache.begin()});
+                hash_t.insert({*iter_elem, *iter_elem});
                 
                 return 0;
             }
@@ -137,7 +134,7 @@ public:
     }
     void clear(){
 
-        list_cache.clear();
+        //list_cache.clear();
 
         cache_size = 0;
 
