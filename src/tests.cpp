@@ -15,7 +15,7 @@ struct Test {
 };
 
 int main() {
-    Cache_2Q<int> cache;
+    Cache::Cache_2Q<int> cache;
 
     uint64_t correct_test_count = 0;
 

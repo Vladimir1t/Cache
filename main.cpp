@@ -5,7 +5,7 @@
 
 int main()
 {
-    Cache_2Q<int> cache;
+    Cache::Cache_2Q<int> cache;
 
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;

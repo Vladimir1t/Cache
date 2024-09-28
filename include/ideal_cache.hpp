@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
+#include <cassert>
 
-#define ERROR -1
-
+namespace Cache {
 /** @brief Ideal Cache - a class with its list, unordered_map and methods of ideal cache algorithm
  */
 template <typename T>
@@ -16,15 +16,12 @@ class Ideal_cache {
 
 private:
 
-    using list_iter_t   = typename std::list<T>::iterator;
     using vector_iter_t = typename std::vector<T>::iterator;
     using hash_t_iter_t = typename std::unordered_map<T, T>;
 
-    //std::list<T> list_cache;
-
     uint64_t cache_size = 0;
 
-    std::unordered_map<T, T> hash_t; //
+    std::unordered_map<T, T> hash_t; 
 
     uint32_t find_in_cache(vector_iter_t iter_elem) {
 
@@ -38,6 +35,8 @@ private:
 public:
 
     void create_cache(uint64_t size) {
+
+        std::assert(size != 0);
 
         cache_size = size;
         hash_t.reserve(cache_size);
@@ -134,12 +133,11 @@ public:
     }
     void clear(){
 
-        //list_cache.clear();
-
         cache_size = 0;
 
         hash_t.clear();
     }
 };
+}
 
 #endif 

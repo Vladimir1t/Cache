@@ -7,7 +7,7 @@
 
 int main() {
 
-    Ideal_cache<int> ideal_cache;
+    Cache::Ideal_cache<int> ideal_cache;
 
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;
