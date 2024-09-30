@@ -5,7 +5,6 @@
 
 int main()
 {
-    Cache::Cache_2Q<int> cache;
 
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;
@@ -17,7 +16,8 @@ int main()
     #ifdef Debug
         std::cout << cache_size << std::endl;
     #endif
-    cache.create_cache(cache_size);
+    //cache.create_cache(cache_size);
+    Cache::Cache_2Q<int> cache(cache_size);
     #ifdef Debug
         std::cout << "Input the number of elements\n";
     #endif
@@ -36,7 +36,7 @@ int main()
         #endif
         hits_counter += cache.cache_elem(new_elem);
     }
-    cache.clear();
+    // cache.clear();
 
     std::cout << hits_counter << '\n';
     #ifdef Debug

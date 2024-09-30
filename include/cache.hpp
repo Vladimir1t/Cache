@@ -14,6 +14,13 @@ namespace Cache {
 template <typename T>
 class Cache_2Q {
 
+public: 
+
+    Cache_2Q(uint64_t cache_size) : Main_q {cache_size / 5 + 1}, 
+                                    Out_q  {cache_size - Main_q.size} {}
+
+    ~Cache_2Q() {}
+
 private:
 
     enum Queue_t {
@@ -33,8 +40,8 @@ private:
         std::list<T> list_q;
     };
 
-    Queue Main_q = {0};
-    Queue Out_q  = {0};
+    Queue Main_q;
+    Queue Out_q;
 
     uint64_t size_hash_t = 0;
 
@@ -169,16 +176,13 @@ public:
             return find_in_cache(elem);
         }
     }
-    void clear() { 
-
-        Main_q.list_q.clear();
-        Main_q.size = 0;
-
-        Out_q.list_q.clear();
-        Out_q.size = 0;
-
-        hash_t.clear();
-    }
+    // void clear() { 
+    //     Main_q.list_q.clear();
+    //     Main_q.size = 0;
+    //     Out_q.list_q.clear();
+    //     Out_q.size = 0;
+    //     hash_t.clear();
+    // }
 };
 }
 

@@ -16,14 +16,14 @@ class Ideal_cache {
 
 private:
 
-    using vector_iter_t = typename std::vector<T>::iterator;
+    using vector_iter_t = typename std::vector<T>::const_iterator;
     using hash_t_iter_t = typename std::unordered_map<T, T>;
 
     uint64_t cache_size = 0;
 
     std::unordered_map<T, T> hash_t; 
 
-    uint32_t find_in_cache(vector_iter_t iter_elem) {
+    bool find_in_cache(const vector_iter_t iter_elem) {
 
         #ifdef Debug
             std::cout << "Hit in cache" << std::endl;
@@ -34,23 +34,17 @@ private:
 
 public:
 
-    void create_cache(uint64_t size) {
-
-        std::assert(size != 0);
-
-        cache_size = size;
+    Ideal_cache(uint64_t size) : cache_size(size) {
+        assert(size != 0);
         hash_t.reserve(cache_size);
-
-        #ifdef Debug
-            std::cout << "ideal cache size " << cache_size << std::endl;
-        #endif
     }
+    ~Ideal_cache() {}
 
     /** @brief run_ideal_cache() - function that cache the vector of elements by ideal cache algorithm 
      *  @param requests vector of elements which will be cached
      *  @return number of hits
      */
-    uint64_t run_ideal_cache(std::vector<T>& requests) {
+    uint64_t run_ideal_cache(const std::vector<T>& requests) {
         
         uint64_t hits_counter = 0;
 
@@ -68,7 +62,7 @@ public:
      *  @param requests vector of elements that will be cached
      *  @return 0 or 1 
      */
-    bool cache_elem(vector_iter_t iter_elem, std::vector<T>& requests) {
+    bool cache_elem(const vector_iter_t iter_elem, const std::vector<T>& requests) {
 
         #ifdef Debug
             std::cout << "value = " << *iter_elem << std::endl;
@@ -124,18 +118,9 @@ public:
                 
                 return 0;
             }
-            else 
-                return ERROR;
         }
-        else {
-            return find_in_cache(iter_elem);
-        }
-    }
-    void clear(){
 
-        cache_size = 0;
-
-        hash_t.clear();
+        return find_in_cache(iter_elem);
     }
 };
 }

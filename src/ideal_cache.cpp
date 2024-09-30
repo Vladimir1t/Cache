@@ -7,8 +7,6 @@
 
 int main() {
 
-    Cache::Ideal_cache<int> ideal_cache;
-
     uint64_t cache_size = 0;
     uint64_t number_of_elements = 0;
     uint64_t hits_counter = 0;
@@ -20,7 +18,7 @@ int main() {
     #ifdef Debug
         std::cout << cache_size << '\n';
     #endif
-    ideal_cache.create_cache(cache_size);
+    Cache::Ideal_cache<int> ideal_cache(cache_size);
     #ifdef Debug
         std::cout << "Input the number of elements\n";
     #endif
@@ -39,5 +37,4 @@ int main() {
     hits_counter = ideal_cache.run_ideal_cache(elements);
         
     std::cout << hits_counter << '\n';
-    ideal_cache.clear();
 }

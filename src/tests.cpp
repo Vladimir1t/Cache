@@ -4,9 +4,7 @@
 
 #include "tests.hpp"
 #include "cache.hpp"
-#include "ideal_cache.hpp"
-
-// #define Ideal_cache
+//#include "ideal_cache.hpp"
 
 struct Test {
     uint64_t         cache_size;
@@ -15,7 +13,6 @@ struct Test {
 };
 
 int main() {
-    Cache::Cache_2Q<int> cache;
 
     uint64_t correct_test_count = 0;
 
@@ -33,7 +30,8 @@ int main() {
     const int TESTS_NUM = sizeof(tests) / sizeof(tests[0]);
 
     for (int i = 0; i < TESTS_NUM; ++i) {
-        cache.create_cache(tests[i].cache_size);
+
+        Cache::Cache_2Q<int> cache(tests[i].cache_size);
         uint64_t hits_counter = 0;
 
         for (int elem: tests[i].elements) {
