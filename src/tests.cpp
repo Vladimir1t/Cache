@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <cstdio>
 
-#include "tests.hpp"
+//#include "tests.hpp"
 #include "cache.hpp"
-//#include "ideal_cache.hpp"
 
 struct Test {
     uint64_t         cache_size;
@@ -12,41 +12,53 @@ struct Test {
     uint64_t         hits_num;
 };
 
-int main() {
+int main(int argc, char* argv[]) {
 
     uint64_t correct_test_count = 0;
+    uint64_t num_elements       = 0;
+    uint64_t cache_size         = 0;
+    uint64_t hits_ref           = 0;
+    uint64_t tests_num          = 0;
 
-    Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9}, 0},
-                    {10, {1, 1, 1, 2, 2, 2, 2, 3}, 5},
-                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 8}, 3},
-                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 4, 8, 3, 10}, 4},
-                    {7, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 5, 4, 8, 3, 9}, 3},
-                    {5, {1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1}, 9},
-                    {5, {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2}, 2},
-                    {5, {1, 2, 3, 4, 5, 6, 7, 5, 34, 8, 10, 2}, 1},
-                    {1, {1, 1, 1, 1, 1}, 4},
-                    {1, {1, 2, 3, 3, 2}, 1}};
+    //                      test.txt
+    // [cache size] [number of elements] [elements] [reference hits value]
+    // ...
+   
+    FILE* file = fopen(argv[1], "r"); 
+    
+    while (fscanf(file, "%llu", &cache_size) == 1) {
 
-    const int TESTS_NUM = sizeof(tests) / sizeof(tests[0]);
+        if (fscanf(file, "%llu", &num_elements) != 1)
+            return 0;
 
-    for (int i = 0; i < TESTS_NUM; ++i) {
+        ++tests_num;
 
-        Cache::Cache_2Q<int> cache(tests[i].cache_size);
+        std::vector<int> test(num_elements);
+
+        for (int i = 0; i < num_elements; ++i) {
+            if (fscanf(file, "%d", &test.at(i)) != 1) 
+                return 0;
+        }
+
+        if (fscanf(file, "%llu", &hits_ref) != 1)
+            return 0;
+
+        Cache::Cache_2Q<int> cache(cache_size);
         uint64_t hits_counter = 0;
 
-        for (int elem: tests[i].elements) {
+        for (int elem: test) {
+            std::cout << elem << '\n';
             hits_counter += cache.cache_elem(elem);
         }
-        if (hits_counter != tests[i].hits_num) {
-            std::cout << "test [" << i + 1 << "] wrong\n";
-            std::cout << "expected hits value = " << tests[i].hits_num 
+        if (hits_counter != hits_ref) {
+            std::cout << "test [" << tests_num << "] wrong\n";
+            std::cout << "expected hits value = " << hits_ref 
                       << "\ncurrent value = " << hits_counter << '\n';
         }
         else 
             correct_test_count++;
-
-        cache.clear();
     }
-    if (correct_test_count == TESTS_NUM)
+
+    if (correct_test_count == tests_num)
         std::cout << "--- All tests are correct ---\n";
 }

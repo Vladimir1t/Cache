@@ -47,7 +47,7 @@ private:
 
     std::unordered_map<T, Elem_hash_t> hash_t;
 
-    uint32_t find_in_cache(const T& elem) {
+    bool find_in_cache(const T& elem) {
         Elem_hash_t get_elem = hash_t.at(elem);
         
         if (get_elem.num_queue == MAIN_Q) {     
@@ -115,7 +115,7 @@ public:
      *  @param elem element that is cached
      *  @return 0 or 1 
      */
-    uint32_t cache_elem(const T& elem) {
+    bool cache_elem(const T& elem) {
         #ifdef Debug
             std::cout << "value = " << elem << std::endl;
         #endif
