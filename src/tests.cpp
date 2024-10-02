@@ -3,16 +3,15 @@
 #include <cstdint>
 #include <cstdio>
 
-//#include "tests.hpp"
+#include "tests.hpp"
 #include "cache.hpp"
 
-struct Test {
-    uint64_t         cache_size;
-    std::vector<int> elements;
-    uint64_t         hits_num;
-};
+int main(int argc, const char* argv[]) {
 
-int main(int argc, char* argv[]) {
+   run_tests(argv[1]);
+}
+
+int run_tests(const char* file_name) {
 
     uint64_t correct_test_count = 0;
     uint64_t num_elements       = 0;
@@ -24,12 +23,12 @@ int main(int argc, char* argv[]) {
     // [cache size] [number of elements] [elements] [reference hits value]
     // ...
    
-    FILE* file = fopen(argv[1], "r"); 
+    FILE* file = fopen(file_name, "r"); 
     
     while (fscanf(file, "%llu", &cache_size) == 1) {
 
         if (fscanf(file, "%llu", &num_elements) != 1)
-            return 0;
+            break;
 
         ++tests_num;
 
@@ -47,7 +46,6 @@ int main(int argc, char* argv[]) {
         uint64_t hits_counter = 0;
 
         for (int elem: test) {
-            std::cout << elem << '\n';
             hits_counter += cache.cache_elem(elem);
         }
         if (hits_counter != hits_ref) {
@@ -58,7 +56,8 @@ int main(int argc, char* argv[]) {
         else 
             correct_test_count++;
     }
-
     if (correct_test_count == tests_num)
         std::cout << "--- All tests are correct ---\n";
+
+    return 0;
 }

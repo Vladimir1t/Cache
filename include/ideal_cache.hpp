@@ -25,7 +25,7 @@ private:
 
     bool find_in_cache(const vector_iter_t iter_elem) {
 
-        #ifdef Debug
+        #ifdef NDEBUG
             std::cout << "Hit in cache" << std::endl;
         #endif
 
@@ -64,7 +64,7 @@ public:
      */
     bool cache_elem(const vector_iter_t iter_elem, const std::vector<T>& requests) {
 
-        #ifdef Debug
+        #ifdef NDEBUG
             std::cout << "value = " << *iter_elem << std::endl;
         #endif
 

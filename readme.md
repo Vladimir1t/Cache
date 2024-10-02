@@ -74,12 +74,10 @@ This is a templated class that implements the 2Q caching algorithm.
    
 ### Example of Main Flow:
 ```cpp
-Cache_2Q<int> cache;
-cache.create_cache(10);      // Creates a cache of size 10
-cache.cache_elem(1);         // Adds element 1 to the cache
-cache.cache_elem(2);         // Adds element 2 to the cache
-cache.cache_elem(1);         // Hits the cache as element 1 is already cached
-cache.clear();               // Clears the cache
+Cache::Cache_2Q<int> cache(10);         // Creates a cache of size 10
+cache.cache_elem(1);                    // Adds element 1 to the cache
+cache.cache_elem(2);                    // Adds element 2 to the cache
+cache.cache_elem(1);                    // Hits the cache as element 1 is already cached
 ```
 
 ## Usage Examples
@@ -92,8 +90,7 @@ Input number of elemets
 7
 Input elements
 1 2 3 4 5 6 7
-number of strikes = 0
-0%
+number of strikes = 0   // 0%
 ```
 
 ### Example 2: Cache Hit
@@ -104,8 +101,7 @@ Input number of elemets
 6
 Input elements
 1 1 2 3 2 4
-number of strikes = 2
-33%
+number of strikes = 2   // 33%
 ```
 
 ## Class Ideal_cache
@@ -119,19 +115,18 @@ This is a templated class that implements the ideal caching algorithm.
 The `tests.cpp` file provides several test cases to validate the functionality of the cache system. To run the tests:
 1. After compiling the code, execute the binary:
    ```bash
-   make test
+   ./test.x  tests.txt
    ```
 2. After running, the test results will be displayed in the terminal.
 
 The test cases cover different scenarios such as repeated element access, evictions, and cache hits.
 
 ### Example Test Case:
-```cpp     
-             // size       elements          hits               
-Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
-                {10, {1, 1, 1, 2, 2, 2, 2, 3}, 5},
+``` .txt    
+   // [size] [number of elements] [elements] [hits]               
+        10         9            1 2 4 5 7 8 9    0
+        10         8           1 1 1 2 2 2 2 3   5
                 ...
-};
 ```
 ## Test_big_data
 - The function generate 10'000'000 numbers for testing cache 
@@ -146,7 +141,7 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
 
 ## Notes
 - The program uses a 2Q caching strategy, where the Main Queue takes up 20% of the cache size, and the Out Queue holds 80%.
-- To enable debugging information, you can define the `Debug` macro in `cache.hpp`. This will print detailed cache operations to the console during execution.
+- To enable debugging information, you can define the `NDEBUG` macro in `cache.hpp`. This will print detailed cache operations to the console during execution.
 
 ---
 ![pseudocode](info/2Q.PDF.png)
@@ -156,10 +151,10 @@ Test tests[] = {{10, {1, 2, 4, 5, 7, 8, 9},    0},
   
 ### Compilation Debug Example:
 ```bash
-g++ -D Debug -std=c++17 -o cache.x main.cpp -I./include
+g++ -D NDEBUG -std=c++17 -o cache.x main.cpp -I./include
 
-g++ -D Debug -std=c++17 -o test.x src/tests.cpp -I./include
+g++ -D NDEBUG -std=c++17 -o test.x src/tests.cpp -I./include
 
-g++ -D Debug -std=c++17 -o ideal_cache.x src/ideal_cache.cpp -I./include
+g++ -D NDEBUG -std=c++17 -o ideal_cache.x src/ideal_cache.cpp -I./include
 
 ```

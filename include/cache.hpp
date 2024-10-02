@@ -48,6 +48,7 @@ private:
     std::unordered_map<T, Elem_hash_t> hash_t;
 
     bool find_in_cache(const T& elem) {
+
         Elem_hash_t get_elem = hash_t.at(elem);
         
         if (get_elem.num_queue == MAIN_Q) {     
@@ -60,7 +61,7 @@ private:
 
             hash_t.insert({new_elem, {Main_q.list_q.begin(), MAIN_Q}});
 
-            #ifdef Debug
+            #ifdef NDEBUG
                 std::cout << "Hit in Main_q" << std::endl;
             #endif
 
@@ -70,21 +71,21 @@ private:
 
             Main_q.list_q.push_front(*(get_elem.value));
 
-            if (Main_q.size < Main_q.list_q.size()) {            // if Main_q size is above the threshold
+            if (Main_q.size < Main_q.list_q.size()) {         // if Main_q size is above the threshold
                 T eresed_elem = Main_q.list_q.back();
                 Main_q.list_q.pop_back();
 
                 auto get_elem_erased {hash_t.find(eresed_elem)};
-                get_elem.num_queue = OUT_Q;                      // Main_q -> Out_q
+                get_elem.num_queue = OUT_Q;                   // Main_q -> Out_q
                 
                 Out_q.list_q.push_front(eresed_elem);
             }
             
             Out_q.list_q.erase(get_elem.value);
-            get_elem.num_queue = MAIN_Q;                          // Out_q -> Main_q
+            get_elem.num_queue = MAIN_Q;                      // Out_q -> Main_q
             get_elem.value = Main_q.list_q.begin();
                 
-            #ifdef Debug
+            #ifdef NDEBUG
                 std::cout << "Hit in Out_q" << std::endl;
             #endif
 
@@ -99,6 +100,17 @@ private:
         queue.list_q.pop_back();
     }
 
+    void put_in_queue(Queue& queue, const T& elem, Queue_t queue_t) {
+       
+        queue.list_q.push_back(elem);
+        #ifdef NDEBUG
+            std::cout << "put in list {" << queue_t << '} ' << queue.list_q.back() << "}\n\n";
+        #endif
+        Elem_hash_t elem_hash_t = {--queue.list_q.end(), queue_t};
+               
+        hash_t.insert({elem, elem_hash_t});
+    }
+
 public:
 
     void create_cache(uint64_t cache_size) {
@@ -107,7 +119,7 @@ public:
         Out_q.size  = cache_size - Main_q.size;   // OUT  ~ 80%
 
         hash_t.reserve(cache_size);
-        #ifdef Debug
+        #ifdef NDEBUG
             std::cout << Main_q.size << ' ' << Out_q.size << std::endl;
         #endif
     }
@@ -116,44 +128,29 @@ public:
      *  @return 0 or 1 
      */
     bool cache_elem(const T& elem) {
-        #ifdef Debug
+        #ifdef NDEBUG
             std::cout << "value = " << elem << std::endl;
         #endif
 
         if (hash_t.find(elem) == hash_t.end()) {     // doesn't locate in cache
 
             if (Main_q.size > Main_q.list_q.size()) { 
-                Main_q.list_q.push_back(elem);
-
-                #ifdef Debug
-                    std::cout << "put in list Main_q {" << Main_q.list_q.back() << "}\n\n";
-                #endif
-
-                Elem_hash_t elem_hash_t = {--Main_q.list_q.end(), MAIN_Q};
-               
-                hash_t.insert({elem, elem_hash_t});
+                put_in_queue(Main_q, elem, MAIN_Q);
 
                 return 0;
             }
             else if (Out_q.size > Out_q.list_q.size()) {
-                Out_q.list_q.push_back(elem);
-
-                #ifdef Debug
-                    std::cout << "put in list Out_q {" << Out_q.list_q.back() << "}\n\n";
-                #endif 
-
-                hash_t.insert({elem, {--Out_q.list_q.end(), OUT_Q}});  
+                put_in_queue(Out_q, elem, OUT_Q);
+                
                 return 0;
             }
             else if (Out_q.size == Out_q.list_q.size() && Out_q.size != 0){ 
                 erase_cache(Out_q);
-
+               
                 Out_q.list_q.push_front(elem);
-
-                #ifdef Debug
+                #ifdef NDEBUG
                     std::cout << "put in list Out_q {" << Out_q.list_q.front() << "}\n\n";
                 #endif
-
                 hash_t.insert({elem, {Out_q.list_q.begin(), OUT_Q}});   
 
                 return 0;
@@ -162,27 +159,18 @@ public:
                 erase_cache(Main_q);
 
                 Main_q.list_q.push_front(elem);
-
-                #ifdef Debug
+                #ifdef NDEBUG
                     std::cout << "put in list Main_q {" << Main_q.list_q.front() << "}\n\n";
                 #endif 
-
                 hash_t.insert({elem, {Main_q.list_q.begin(), MAIN_Q}});    
 
                 return 0;
             }
         }
-        else {   // locate in cache
+        else {                                 // locate in cache
             return find_in_cache(elem);
         }
     }
-    // void clear() { 
-    //     Main_q.list_q.clear();
-    //     Main_q.size = 0;
-    //     Out_q.list_q.clear();
-    //     Out_q.size = 0;
-    //     hash_t.clear();
-    // }
 };
 }
 

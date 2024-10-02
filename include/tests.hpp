@@ -3,6 +3,6 @@
 
 /** @brief program that run tests
  */
-void run_tests();
+int run_tests(const char* file_name);
 
 #endif // TESTS_HPP
