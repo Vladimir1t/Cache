@@ -29,23 +29,27 @@ int run_tests(const char* file_name) {
     if (!in_file.is_open())
         return 0;
     
-    while (in_file >> cache_size) {
+    while ((in_file >> cache_size).good()) {
 
-        in_file >> num_elements;
+        if (!(in_file >> num_elements).good())
+            return 0;
         ++tests_num;
 
         std::vector<int> test(num_elements);
 
-        for (int i = 0; i < num_elements; ++i)
-            in_file >> test[i];
+        for (int i = 0; i < num_elements; ++i) {
+            if (!(in_file >> test[i]).good())
+                return 0;
+        }
 
         in_file >> hits_ref;
 
         Cache::Cache_2Q<int> cache(cache_size);
         uint64_t hits_counter = 0;
 
-        for (int elem: test) 
+        for (int elem: test) {
             hits_counter += cache.cache_elem(elem);
+        }
     
         if (hits_counter != hits_ref) {
             std::cout << "test [" << tests_num << "] wrong\n";
