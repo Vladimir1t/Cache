@@ -9,7 +9,7 @@
 
 int main(int argc, const char* argv[]) {
 
-   run_tests(argv[1]);
+    run_tests(argv[1]);
 }
 
 int run_tests(const char* file_name) {
@@ -24,8 +24,10 @@ int run_tests(const char* file_name) {
     // [cache size] [number of elements] [elements] [reference hits value]
     // ...
    
-   // FILE* file = fopen(file_name, "r"); 
-   std::ifstream in_file(file_name);
+    std::ifstream in_file(file_name);
+
+    if (!in_file.is_open())
+        return 0;
     
     while (in_file >> cache_size) {
 
@@ -35,15 +37,9 @@ int run_tests(const char* file_name) {
         std::vector<int> test(num_elements);
 
         for (int i = 0; i < num_elements; ++i)
-            if (!in_file >> test.at(i)) { 
-                in_file.close();
-                return 0;
-            }
+            in_file >> test[i];
 
-        if (!in_file >> hits_ref) {
-            in_file.close();
-            return 0;
-        }
+        in_file >> hits_ref;
 
         Cache::Cache_2Q<int> cache(cache_size);
         uint64_t hits_counter = 0;
@@ -58,7 +54,8 @@ int run_tests(const char* file_name) {
         }
         else 
             correct_test_count++;
-    }
+        
+    } 
     if (correct_test_count == tests_num)
         std::cout << "--- All tests are correct ---\n";
 
