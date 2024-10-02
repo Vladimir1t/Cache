@@ -122,7 +122,7 @@ The `tests.cpp` file provides several test cases to validate the functionality o
 The test cases cover different scenarios such as repeated element access, evictions, and cache hits.
 
 ### Example Test Case:
-``` .txt    
+```txt    
    // [size] [number of elements] [elements] [hits]               
         10         7            1 2 4 5 7 8 9    0
         10         8           1 1 1 2 2 2 2 3   5

@@ -17,11 +17,10 @@ class Ideal_cache {
 private:
 
     using vector_iter_t = typename std::vector<T>::const_iterator;
-    using hash_t_iter_t = typename std::unordered_map<T, T>;
 
-    uint64_t cache_size = 0;
+    uint64_t cache_size_ = 0;
 
-    std::unordered_map<T, T> hash_t; 
+    std::unordered_map<T, T> hash_t_; 
 
     bool find_in_cache(const vector_iter_t iter_elem) {
 
@@ -34,9 +33,9 @@ private:
 
 public:
 
-    Ideal_cache(uint64_t size) : cache_size(size) {
+    Ideal_cache(uint64_t size) : cache_size_(size) {
         assert(size != 0);
-        hash_t.reserve(cache_size);
+        hash_t_.reserve(cache_size_);
     }
     ~Ideal_cache() {}
 
@@ -68,15 +67,15 @@ public:
             std::cout << "value = " << *iter_elem << std::endl;
         #endif
 
-        if (hash_t.find(*iter_elem) == hash_t.end()) {
+        if (hash_t_.find(*iter_elem) == hash_t_.end()) {
 
-            if (hash_t.size() < cache_size) {
+            if (hash_t_.size() < cache_size_) {
 
-                hash_t.insert({*iter_elem, *iter_elem});
+                hash_t_.insert({*iter_elem, *iter_elem});
                 
                 return 0;
             }
-            else if (hash_t.size() == cache_size && cache_size != 0) {
+            else if (hash_t_.size() == cache_size_ && cache_size_ != 0) {
 
                 bool find_in_requests = false;
 
@@ -91,7 +90,7 @@ public:
 
                 T iter_last_index;
 
-                for (auto iter_cache: hash_t) {
+                for (auto iter_cache: hash_t_) {
                     find_in_requests = false;
 
                     for (vector_iter_t it = iter_elem; it != requests.end(); ++it) { 
@@ -105,16 +104,16 @@ public:
                         }
                     }
                     if (find_in_requests == false) {
-                        hash_t.erase(iter_cache.first);
+                        hash_t_.erase(iter_cache.first);
 
-                        hash_t.insert({*iter_elem, *iter_elem});
+                        hash_t_.insert({*iter_elem, *iter_elem});
                         
                         return 0;
                     }
                 }
-                hash_t.erase(iter_last_index);
+                hash_t_.erase(iter_last_index);
 
-                hash_t.insert({*iter_elem, *iter_elem});
+                hash_t_.insert({*iter_elem, *iter_elem});
                 
                 return 0;
             }
