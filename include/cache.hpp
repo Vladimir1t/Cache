@@ -19,13 +19,11 @@ public:
     Cache_2Q(uint64_t cache_size) : Main_q_ {cache_size / 5 + 1}, 
                                     Out_q_  {cache_size - Main_q_.size_} {}
 
-    ~Cache_2Q() {}
-
 private:
 
-    enum Queue_t {
+    enum class Queue_t {
         MAIN_Q,
-        OUT_Q
+        OUT_Q  
     };
 
     using list_it = typename std::list<T>::iterator;
@@ -49,7 +47,7 @@ private:
 
         Elem_hash_t_ get_elem = hash_t_.at(elem);
         
-        if (get_elem.num_queue_ == MAIN_Q) {     
+        if (get_elem.num_queue_ == Queue_t::MAIN_Q) {     
                        
             T new_elem = *(get_elem.value_);     
             Main_q_.list_q_.push_front(new_elem);
@@ -57,15 +55,15 @@ private:
             Main_q_.list_q_.erase(get_elem.value_);
             hash_t_.erase(*(get_elem.value_));
 
-            hash_t_.insert({new_elem, {Main_q_.list_q_.begin(), MAIN_Q}});
+            hash_t_.insert({new_elem, {Main_q_.list_q_.begin(), Queue_t::MAIN_Q}});
 
-            #ifdef NDEBUG
-                std::cout << "Hit in Main_q_" << std::endl;
+            #ifndef NDEBUG
+                std::cout << "Hit in Main_q" << std::endl;
             #endif
 
-            return 1;
+            return true;
         }
-        else if (get_elem.num_queue_ == OUT_Q) { 
+        else if (get_elem.num_queue_ == Queue_t::OUT_Q) { 
 
             Main_q_.list_q_.push_front(*(get_elem.value_));
 
@@ -74,22 +72,22 @@ private:
                 Main_q_.list_q_.pop_back();
 
                 auto get_elem_erased {hash_t_.find(eresed_elem)};
-                get_elem.num_queue_ = OUT_Q;                   // Main_q -> Out_q
+                get_elem.num_queue_ = Queue_t::OUT_Q;                   // Main_q -> Out_q
                 
                 Out_q_.list_q_.push_front(eresed_elem);
             }
             
             Out_q_.list_q_.erase(get_elem.value_);
-            get_elem.num_queue_ = MAIN_Q;                      // Out_q -> Main_q
+            get_elem.num_queue_ = Queue_t::MAIN_Q;                      // Out_q -> Main_q
             get_elem.value_ = Main_q_.list_q_.begin();
                 
-            #ifdef NDEBUG
+            #ifndef NDEBUG
                 std::cout << "Hit in Out_q_" << std::endl;
             #endif
 
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     void erase_cache(Queue& queue) {
@@ -101,8 +99,8 @@ private:
     void put_in_queue(Queue& queue, const T& elem, Queue_t queue_t) {
        
         queue.list_q_.push_back(elem);
-        #ifdef NDEBUG
-            std::cout << "put in list {" << queue_t << '} ' << queue.list_q_.back() << "}\n\n";
+        #ifndef NDEBUG
+            std::cout << "put in list {" << (int)queue_t << '} ' << queue.list_q_.back() << "}\n\n";
         #endif
         Elem_hash_t_ elem_hash_t = {--queue.list_q_.end(), queue_t};
                
@@ -111,34 +109,24 @@ private:
 
 public:
 
-    void create_cache(uint64_t cache_size) {
-
-        Main_q_.size_ = cache_size * 0.2 + 1;       // MAIN ~ 20%
-        Out_q_.size_  = cache_size - Main_q_.size_;   // OUT  ~ 80%
-
-        hash_t_.reserve(cache_size);
-        #ifdef NDEBUG
-            std::cout << Main_q_.size_ << ' ' << Out_q_.size_ << std::endl;
-        #endif
-    }
     /** @brief cache_elem() - function that cache the element by algorithm 2Q
      *  @param elem element that is cached
      *  @return 0 or 1 
      */
     bool cache_elem(const T& elem) {
-        #ifdef NDEBUG
+        #ifndef NDEBUG
             std::cout << "value = " << elem << std::endl;
         #endif
 
         if (hash_t_.find(elem) == hash_t_.end()) {     // doesn't locate in cache
 
             if (Main_q_.size_ > Main_q_.list_q_.size()) { 
-                put_in_queue(Main_q_, elem, MAIN_Q);
+                put_in_queue(Main_q_, elem, Queue_t::MAIN_Q);
 
                 return 0;
             }
             else if (Out_q_.size_ > Out_q_.list_q_.size()) {
-                put_in_queue(Out_q_, elem, OUT_Q);
+                put_in_queue(Out_q_, elem, Queue_t::OUT_Q);
                 
                 return 0;
             }
@@ -146,10 +134,10 @@ public:
                 erase_cache(Out_q_);
                
                 Out_q_.list_q_.push_front(elem);
-                #ifdef NDEBUG
+                #ifndef NDEBUG
                     std::cout << "put in list Out_q_ {" << Out_q_.list_q_.front() << "}\n\n";
                 #endif
-                hash_t_.insert({elem, {Out_q_.list_q_.begin(), OUT_Q}});   
+                hash_t_.insert({elem, {Out_q_.list_q_.begin(), Queue_t::OUT_Q}});   
 
                 return 0;
             }
@@ -157,10 +145,10 @@ public:
                 erase_cache(Main_q_);
 
                 Main_q_.list_q_.push_front(elem);
-                #ifdef NDEBUG
+                #ifndef NDEBUG
                     std::cout << "put in list Main_q_ {" << Main_q_.list_q_.front() << "}\n\n";
                 #endif 
-                hash_t_.insert({elem, {Main_q_.list_q_.begin(), MAIN_Q}});    
+                hash_t_.insert({elem, {Main_q_.list_q_.begin(), Queue_t::MAIN_Q}});    
 
                 return 0;
             }

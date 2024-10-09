@@ -11,19 +11,19 @@ int main() {
     uint64_t number_of_elements = 0;
     uint64_t hits_counter = 0;
 
-   #ifdef NDEBUG
+   #ifndef NDEBUG
         std::cout << "Input the size of cache\n";
     #endif
     std::cin >> cache_size;
-    #ifdef NDEBUG
+    #ifndef NDEBUG
         std::cout << cache_size << '\n';
     #endif
     Cache::Ideal_cache<int> ideal_cache(cache_size);
-    #ifdef NDEBUG
+    #ifndef NDEBUG
         std::cout << "Input the number of elements\n";
     #endif
     std::cin >> number_of_elements;
-    #ifdef NDEBUG
+    #ifndef NDEBUG
         std::cout << "Input elements\n";
     #endif
 

@@ -24,7 +24,7 @@ private:
 
     bool find_in_cache(const vector_iter_t iter_elem) {
 
-        #ifdef NDEBUG
+        #ifndef NDEBUG
             std::cout << "Hit in cache" << std::endl;
         #endif
 
@@ -37,7 +37,6 @@ public:
         assert(size != 0);
         hash_t_.reserve(cache_size_);
     }
-    ~Ideal_cache() {}
 
     /** @brief run_ideal_cache() - function that cache the vector of elements by ideal cache algorithm 
      *  @param requests vector of elements which will be cached
@@ -59,11 +58,11 @@ public:
     /** @brief cache_elem() - function that cache the element of ideal cache algorithm 
      *  @param iter_elem iterator of an element that is cached
      *  @param requests vector of elements that will be cached
-     *  @return 0 or 1 
+     *  @return true or false 
      */
     bool cache_elem(const vector_iter_t iter_elem, const std::vector<T>& requests) {
 
-        #ifdef NDEBUG
+        #ifndef NDEBUG
             std::cout << "value = " << *iter_elem << std::endl;
         #endif
 
@@ -73,7 +72,7 @@ public:
 
                 hash_t_.insert({*iter_elem, *iter_elem});
                 
-                return 0;
+                return false;
             }
             else if (hash_t_.size() == cache_size_ && cache_size_ != 0) {
 
@@ -93,29 +92,26 @@ public:
                 for (auto iter_cache: hash_t_) {
                     find_in_requests = false;
 
-                    for (vector_iter_t it = iter_elem; it != requests.end(); ++it) { 
-                        if (*it == iter_cache.second) {
-                            if (last_index < it) {
-                                last_index = it;
-                                iter_last_index = iter_cache.first;
-                            }
-                            find_in_requests = true;
-                            break;
+                    vector_iter_t it = std::find(iter_elem, requests.end(), iter_cache.second);
+                    if (it != requests.end()) {
+                        if (last_index < it) {
+                            last_index = it;
+                            iter_last_index = iter_cache.first;
                         }
                     }
-                    if (find_in_requests == false) {
+                    else {
                         hash_t_.erase(iter_cache.first);
 
                         hash_t_.insert({*iter_elem, *iter_elem});
                         
-                        return 0;
+                        return false;
                     }
                 }
                 hash_t_.erase(iter_last_index);
 
                 hash_t_.insert({*iter_elem, *iter_elem});
                 
-                return 0;
+                return false;
             }
         }
 
