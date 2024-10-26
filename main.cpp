@@ -9,7 +9,7 @@ int main()
     uint64_t number_of_elements = 0;
     
     #ifndef NDEBUG
-        std::cout << "Input the size of cache\n";
+        std::cout << "Input the size of cache" << std::endl;
     #endif
     std::cin >> cache_size;
     #ifndef NDEBUG
@@ -17,7 +17,7 @@ int main()
     #endif
     Cache::Cache_2Q<int> cache(cache_size);
     #ifndef NDEBUG
-        std::cout << "Input the number of elements\n";
+        std::cout << "Input the number of elementn" << std::endl;
     #endif
     std::cin >> number_of_elements;
     #ifndef NDEBUG
@@ -35,7 +35,7 @@ int main()
         hits_counter += cache.cache_elem(new_elem);
     }
 
-    std::cout << hits_counter << '\n';
+    std::cout << hits_counter << std::endl;
     #ifndef NDEBUG
         uint64_t result = (double) hits_counter / (double) number_elem * 100;
         std::cout << result << "%\n";  

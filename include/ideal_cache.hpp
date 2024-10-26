@@ -28,7 +28,7 @@ private:
             std::cout << "Hit in cache" << std::endl;
         #endif
 
-        return 1;
+        return true;
     }
 
 public:
@@ -83,7 +83,7 @@ public:
                         find_in_requests = true;
                 }
                 if (find_in_requests == false)
-                    return 0;
+                    return false;
 
                 vector_iter_t last_index = requests.begin();
 

@@ -53,7 +53,7 @@ private:
         if (get_elem.num_queue_ == MAIN_Q) {     
                        
             #ifndef NDEBUG
-                std::cout << "Hit in Main_q" << std::endl;
+                std::cout << "Hit in Main_q\n" << std::endl;
             #endif
             Main_q_.list_q_.erase(get_elem.value_);
 
@@ -67,7 +67,7 @@ private:
         else if (get_elem.num_queue_ == OUT_Q) { 
 
             #ifndef NDEBUG
-                std::cout << "Hit in Out_q_" << std::endl;
+                std::cout << "Hit in Out_q_\n" << std::endl;
             #endif
 
             Main_q_.list_q_.push_front(*(get_elem.value_));
@@ -101,7 +101,7 @@ private:
        
         queue.list_q_.push_back(elem);
         #ifndef NDEBUG
-            std::cout << "put in list {" << queue_t << "} " << queue.list_q_.back() << "\n\n";
+            std::cout << "put in list [" << queue_t << "] " << queue.list_q_.back() << "\n\n";
         #endif               
         hash_t_.insert({elem, {--queue.list_q_.end(), queue_t}});
     }
@@ -110,7 +110,7 @@ public:
 
     /** @brief cache_elem() - function that cache the element by algorithm 2Q
      *  @param elem element that is cached
-     *  @return 0 or 1 
+     *  @return true or false 
      */
     bool cache_elem(const T& elem) {
         #ifndef NDEBUG
@@ -120,13 +120,11 @@ public:
         if (hash_t_.find(elem) == hash_t_.end()) {     // doesn't locate in cache
 
             if (Main_q_.size_ > Main_q_.list_q_.size()) { 
-                std::cout << "[ 1 ]\n";
                 put_in_queue(Main_q_, elem, MAIN_Q);
 
                 return false;
             }
             else if (Out_q_.size_ > Out_q_.list_q_.size()) {
-                std::cout << "[ 2 ]\n";
                 put_in_queue(Out_q_, elem, OUT_Q);
                 
                 return false;
