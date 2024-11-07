@@ -2,14 +2,14 @@
 #define IDEAL_CACHE
 
 #include <iostream>
-#include <list>
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
 #include <cassert>
+#include <algorithm>
 
 namespace Cache {
-/** @brief Ideal Cache - a class with its list, unordered_map and methods of ideal cache algorithm
+/** @brief Ideal Cache - a class with its unordered_map and methods of ideal cache algorithm
  */
 template <typename T>
 class Ideal_cache {
