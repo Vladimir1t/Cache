@@ -9,7 +9,8 @@
 
 namespace Cache {
 
-/** @brief Cache - a class with its strucures and methods of 2Q cache
+/** @class Cache - a class with its strucures and methods of 2Q cache
+ *  @brief 2Q algorithm
  */
 template <typename T>
 class Cache_2Q {
@@ -19,14 +20,14 @@ public:
     Cache_2Q(uint64_t cache_size) : Main_q_{cache_size / 5 + 1}, 
                                     Out_q_{cache_size - Main_q_.size_} {
                                         
-                                        hash_t_.erase(cache_size);
-                                    }
+        hash_t_.erase(cache_size);
+    }
 
 private:
 
     enum Queue_t {
-        MAIN_Q = 0,
-        OUT_Q  = 1 
+        MAIN_Q,
+        OUT_Q 
     };
 
     using list_it = typename std::list<T>::iterator;
@@ -117,7 +118,7 @@ public:
             std::cout << "value = " << elem << std::endl;
         #endif
 
-        if (hash_t_.find(elem) == hash_t_.end()) {     // doesn't locate in cache
+        if (hash_t_.find(elem) == hash_t_.end()) {    
 
             if (Main_q_.size_ > Main_q_.list_q_.size()) { 
                 put_in_queue(Main_q_, elem, MAIN_Q);
@@ -152,7 +153,7 @@ public:
                 return false;
             }
         }
-        else {                                 // locate in cache
+        else {        // locate in cache
             return find_in_cache(elem);
         }
     }
